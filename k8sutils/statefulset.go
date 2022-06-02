@@ -2,6 +2,7 @@ package k8sutils
 
 import (
 	"context"
+	"fmt"
 	"path"
 	redisv1beta1 "redis-operator/api/v1beta1"
 	"sort"
@@ -55,6 +56,7 @@ type containerParameters struct {
 
 // CreateOrUpdateStateFul method will create or update Redis service
 func CreateOrUpdateStateFul(namespace string, stsMeta metav1.ObjectMeta, params statefulSetParameters, ownerDef metav1.OwnerReference, containerParams containerParameters, sidecars *[]redisv1beta1.Sidecar) error {
+	fmt.Println("MATT IS HERE: CreateOrUpdateStateFul")
 	logger := statefulSetLogger(namespace, stsMeta.Name)
 	storedStateful, err := GetStatefulSet(namespace, stsMeta.Name)
 	statefulSetDef := generateStatefulSetsDef(stsMeta, params, ownerDef, containerParams, getSidecars(sidecars))
@@ -73,6 +75,7 @@ func CreateOrUpdateStateFul(namespace string, stsMeta metav1.ObjectMeta, params 
 
 // patchStateFulSet will patch Redis Kubernetes StateFulSet
 func patchStatefulSet(storedStateful *appsv1.StatefulSet, newStateful *appsv1.StatefulSet, namespace string) error {
+	fmt.Println("MATT IS HERE: patchStatefulSet")
 	logger := statefulSetLogger(namespace, storedStateful.Name)
 
 	// We want to try and keep this atomic as possible.
@@ -90,6 +93,8 @@ func patchStatefulSet(storedStateful *appsv1.StatefulSet, newStateful *appsv1.St
 		logger.Error(err, "Unable to patch redis statefulset with comparison object")
 		return err
 	}
+	fmt.Printf("MATT IS HERE: patchResult.IsEmpty() %t patchResult %#v END\n", patchResult.IsEmpty(), patchResult)
+
 	if !patchResult.IsEmpty() {
 		logger.Info("Changes in statefulset Detected, Updating...", "patch", string(patchResult.Patch))
 		// Field is immutable therefore we MUST keep it as is.

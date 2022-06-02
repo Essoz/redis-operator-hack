@@ -1,6 +1,7 @@
 package k8sutils
 
 import (
+	"fmt"
 	redisv1beta1 "redis-operator/api/v1beta1"
 
 	corev1 "k8s.io/api/core/v1"
@@ -94,6 +95,7 @@ func generateRedisClusterContainerParams(cr *redisv1beta1.RedisCluster, readines
 
 // CreateRedisLeader will create a leader redis setup
 func CreateRedisLeader(cr *redisv1beta1.RedisCluster) error {
+	fmt.Println("MATT IS HERE: CreateRedisLeader")
 	prop := RedisClusterSTS{
 		RedisStateFulType: "leader",
 		Affinity:          cr.Spec.RedisLeader.Affinity,
@@ -108,6 +110,7 @@ func CreateRedisLeader(cr *redisv1beta1.RedisCluster) error {
 
 // CreateRedisFollower will create a follower redis setup
 func CreateRedisFollower(cr *redisv1beta1.RedisCluster) error {
+	fmt.Println("MATT IS HERE: CreateRedisFollower")
 	prop := RedisClusterSTS{
 		RedisStateFulType: "follower",
 		Affinity:          cr.Spec.RedisFollower.Affinity,
@@ -142,6 +145,8 @@ func (service RedisClusterSTS) getReplicaCount(cr *redisv1beta1.RedisCluster) in
 
 // CreateRedisClusterSetup will create Redis Setup for leader and follower
 func (service RedisClusterSTS) CreateRedisClusterSetup(cr *redisv1beta1.RedisCluster) error {
+	fmt.Println("MATT IS HERE: CreateRedisClusterSetup")
+
 	stateFulName := cr.ObjectMeta.Name + "-" + service.RedisStateFulType
 	logger := statefulSetLogger(cr.Namespace, stateFulName)
 	labels := getRedisLabels(stateFulName, "cluster", service.RedisStateFulType, cr.ObjectMeta.Labels)
