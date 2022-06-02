@@ -93,7 +93,7 @@ func patchStatefulSet(storedStateful *appsv1.StatefulSet, newStateful *appsv1.St
 		logger.Error(err, "Unable to patch redis statefulset with comparison object")
 		return err
 	}
-	fmt.Printf("MATT IS HERE: patchResult.IsEmpty() %t patchResult %#v END\n", patchResult.IsEmpty(), patchResult)
+	fmt.Printf("MATT IS HERE: patchResult.IsEmpty() %t \n", patchResult.IsEmpty())
 
 	if !patchResult.IsEmpty() {
 		logger.Info("Changes in statefulset Detected, Updating...", "patch", string(patchResult.Patch))
@@ -448,6 +448,8 @@ func createStatefulSet(namespace string, stateful *appsv1.StatefulSet) error {
 
 // updateStatefulSet is a method to update statefulset in Kubernetes
 func updateStatefulSet(namespace string, stateful *appsv1.StatefulSet) error {
+	fmt.Printf("MATT IS HERE: updateStatefulSet %#v\n", stateful)
+
 	logger := statefulSetLogger(namespace, stateful.Name)
 	// logger.Info(fmt.Sprintf("Setting Statefulset to the following: %s", stateful))
 	_, err := generateK8sClient().AppsV1().StatefulSets(namespace).Update(context.TODO(), stateful, metav1.UpdateOptions{})
